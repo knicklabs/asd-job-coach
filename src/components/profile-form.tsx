@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { Button } from './ui/button'
+import { Checkbox } from './ui/checkbox'
 import {
   Form,
   FormControl,
@@ -18,7 +19,55 @@ import {
 } from './ui/form'
 import { Input } from './ui/input'
 
+const accommodations = [
+  {
+    id: 'additional-training',
+    label: 'Additional training',
+  },
+  {
+    id: 'alternate-communication-methods',
+    label: 'Alternate communication methods',
+  },
+  {
+    id: 'extra-time',
+    label: 'Extra time',
+  },
+  {
+    id: 'flexible-schedule',
+    label: 'Flexible schedule',
+  },
+  {
+    id: 'modified-duties',
+    label: 'Modified duties',
+  },
+  {
+    id: 'physical-accommodations',
+    label: 'Physical accommodations(i.e. wheelchair access, quiet room)',
+  },
+  {
+    id: 'reminders',
+    label: 'Reminders',
+  },
+  {
+    id: 'sensory-accommodations',
+    label: 'Sensory accommodations (i.e. noise or lighting)',
+  },
+  {
+    id: 'support-animal',
+    label: 'Support animal',
+  },
+  {
+    id: 'support-person',
+    label: 'Support aerson',
+  },
+  {
+    id: 'work-from-home',
+    label: 'Work from home',
+  },
+]
+
 export const ProfileFormSchema = z.object({
+  accommodations: z.array(z.string()),
   name: z.string(),
 })
 
@@ -30,7 +79,8 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
   const form = useForm<z.infer<typeof ProfileFormSchema>>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
-      name: '',
+      accommodations: [],
+      name: 'none',
     },
   })
 
@@ -53,6 +103,48 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
             </FormItem>
           )}
         />
+        <FormItem>
+          <div className="mb-4">
+            <FormLabel className="text-base">Accommodations</FormLabel>
+            <FormDescription>
+              Select the types of accomodations you need.
+            </FormDescription>
+          </div>
+          {accommodations.map((item) => (
+            <FormField
+              key={item.id}
+              control={form.control}
+              name="accommodations"
+              render={({ field }) => {
+                return (
+                  <FormItem
+                    key={item.id}
+                    className="flex flex-row items-start space-x-3 space-y-0"
+                  >
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value?.includes(item.id)}
+                        onCheckedChange={(checked) => {
+                          return checked
+                            ? field.onChange([...field.value, item.id])
+                            : field.onChange(
+                              field.value?.filter(
+                                (value) => value !== item.id
+                              )
+                            )
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      {item.label}
+                    </FormLabel>
+                  </FormItem>
+                )
+              }}
+            />
+          ))}
+          <FormMessage />
+        </FormItem>
         <Button type="submit">Update my profile</Button>
       </form>
     </Form>
