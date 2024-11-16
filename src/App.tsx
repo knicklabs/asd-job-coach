@@ -1,9 +1,5 @@
 function App() {
-  return (
-    <>
-      ASD Job Coach
-    </>
-  )
+  return <>ASD Job Coach</>
 }
 
 export default App
