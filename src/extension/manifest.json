@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "ASD Job Coach",
+    "version": "0.0.1",
+    "description": "ASD Job Coach is a chrome extension that helps you find jobs fit for you and apply for them.",
+    "host_permissions": ["https://*/*"],
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "scripting",
+        "sidePanel",
+        "tabs"
+    ],
+    "action": {
+        "default_title": "Click to open ASD Job Coach"
+    },
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "side_panel": {
+        "default_path": "index.html"
+    }
+}
