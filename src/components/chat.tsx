@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Send } from 'lucide-react'
 
@@ -29,7 +29,7 @@ function Message({
     <div
       className={`flex gap-4 ${reverse ? 'flex-row-reverse' : ''} ${status === 'pending' ? 'motion-safe:animate-pulse' : ''}`}
     >
-      <Avatar>
+      <Avatar data-avatar="true">
         <AvatarFallback
           className={avatarFallback === 'JC' ? 'bg-blue-100' : 'bg-gray-100'}
         >
@@ -62,6 +62,20 @@ export function Chat({
   coachName?: string
   onSubmit?: (message: string) => Promise<string>
 }) {
+  const messagesRef = useRef<HTMLUListElement>(null)
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      const avatars =
+        messagesRef.current?.querySelectorAll('[data-avatar]') ?? []
+      const lastAvatar = avatars[avatars.length - 1]
+
+      if (lastAvatar) {
+        lastAvatar.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 10)
+  }
+
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -104,6 +118,9 @@ export function Chat({
     // Clear the textarea
     setMessage('')
 
+    // Scroll into view
+    scrollToBottom()
+
     setTimeout(async () => {
       // Create the coach's message
       const coachMessage = {
@@ -118,6 +135,9 @@ export function Chat({
 
       // Append the user's and coach's messages to the messages array
       setMessages(updatedMessages)
+
+      // Scroll into view
+      scrollToBottom()
 
       try {
         // Get the response from the coach
@@ -136,8 +156,7 @@ export function Chat({
           )
         )
       } catch (error) {
-        console.log('error', messages)
-
+        console.error(error)
         // Update the messages array with the updated coach's message.
         setMessages(
           updatedMessages.map((message) =>
@@ -152,6 +171,7 @@ export function Chat({
         )
       } finally {
         setLoading(false)
+        scrollToBottom()
       }
     }, 1500)
   }
@@ -160,7 +180,7 @@ export function Chat({
     <div className="w-full h-full overflow-hidden grid grid-rows-[1fr_auto]">
       <ScrollArea className="bg-white p-4">
         {messages.length > 0 && (
-          <ul className="space-y-8">
+          <ul className="space-y-8" ref={messagesRef}>
             {messages.map((message, index) => (
               <li key={message.id}>
                 <Message {...message} reverse={index % 2 === 1} />

@@ -2,25 +2,24 @@
 import path from 'path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import copy from 'rollup-plugin-copy'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    copy({
+    viteStaticCopy({
       targets: [
         {
-          src: 'src/extension/*',
-          dest: 'dist',
-          ignore: ['**/.js', '**/*.ts', '**/manifest.json'],
+          src: 'src/extension/manifest.json',
+          dest: '',
         },
       ],
     }),
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   test: {
@@ -33,8 +32,8 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html'),
-        serviceWorker: path.resolve(__dirname, 'src/extension/service-worker.ts'),
+        main: path.resolve(__dirname, './index.html'),
+        ['service-worker']: path.resolve(__dirname, './src/extension/service-worker.js'),
       },
       output: {
         entryFileNames: '[name].js',

@@ -1,5 +1,7 @@
+import { Panel } from '@/components/panel'
+
 function App() {
-  return <>ASD Job Coach</>
+  return <Panel isProduction={true} />
 }
 
 export default App
