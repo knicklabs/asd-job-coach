@@ -34,13 +34,17 @@ const preview: Preview = {
         method: 'alphabetical',
         order: ['Documentation', 'Examples'],
       }
-    }
+    },
   },
 }
 
 export const decorators = [
   (Story) => (
-    <ThemeProvider><div><Story /></div></ThemeProvider>
+    <ThemeProvider>
+      <div className="w-full h-full">
+        <Story />
+      </div>
+    </ThemeProvider>
   ),
   withThemeByClassName({
     themes: {

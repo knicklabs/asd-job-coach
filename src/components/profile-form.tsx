@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from './ui/form'
 import { Input } from './ui/input'
+import { ScrollArea } from './ui/scroll-area'
 
 const accommodations = [
   {
@@ -66,8 +67,28 @@ const accommodations = [
   },
 ]
 
+const jobTypes = [
+  {
+    id: 'contract-or-freelance',
+    label: 'Contract or Freelance',
+  },
+  {
+    id: 'full-time',
+    label: 'Full-Time',
+  },
+  {
+    id: 'part-time',
+    label: 'Part-Time',
+  },
+  {
+    id: 'temporary',
+    label: 'Temporary',
+  },
+]
+
 export const ProfileFormSchema = z.object({
   accommodations: z.array(z.string()),
+  jobTypes: z.array(z.string()),
   name: z.string(),
 })
 
@@ -80,72 +101,124 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
       accommodations: [],
+      jobTypes: [],
       name: 'none',
     },
   })
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col h-full overflow-hidden"
+        id="profile-form"
+      >
+        <ScrollArea className="max-h-full grow overflow-hidden">
+          <div className="space-y-8 overflow-hidden">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your name" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is what your job coach will call you.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Your name" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is what your job coach will call you.
-              </FormDescription>
+              <div className="mb-4">
+                <FormLabel className="text-base">Accommodations</FormLabel>
+                <FormDescription>
+                  Select the types of accomodations you need.
+                </FormDescription>
+              </div>
+              {accommodations.map((item) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name="accommodations"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={item.id}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item.id)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item.id])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  )
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {item.label}
+                        </FormLabel>
+                      </FormItem>
+                    )
+                  }}
+                />
+              ))}
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormItem>
-          <div className="mb-4">
-            <FormLabel className="text-base">Accommodations</FormLabel>
-            <FormDescription>
-              Select the types of accomodations you need.
-            </FormDescription>
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel className="text-base">Job Type</FormLabel>
+                <FormDescription>
+                  Select the types of jobs you are interested in.
+                </FormDescription>
+              </div>
+              {jobTypes.map((item) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name="jobTypes"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={item.id}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item.id)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item.id])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  )
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {item.label}
+                        </FormLabel>
+                      </FormItem>
+                    )
+                  }}
+                />
+              ))}
+            </FormItem>
           </div>
-          {accommodations.map((item) => (
-            <FormField
-              key={item.id}
-              control={form.control}
-              name="accommodations"
-              render={({ field }) => {
-                return (
-                  <FormItem
-                    key={item.id}
-                    className="flex flex-row items-start space-x-3 space-y-0"
-                  >
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value?.includes(item.id)}
-                        onCheckedChange={(checked) => {
-                          return checked
-                            ? field.onChange([...field.value, item.id])
-                            : field.onChange(
-                              field.value?.filter(
-                                (value) => value !== item.id
-                              )
-                            )
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      {item.label}
-                    </FormLabel>
-                  </FormItem>
-                )
-              }}
-            />
-          ))}
-          <FormMessage />
-        </FormItem>
-        <Button type="submit">Update my profile</Button>
+        </ScrollArea>
+        <Button className="flex-grow-0" form="profile-form" type="submit">
+          Update my profile
+        </Button>
       </form>
     </Form>
   )
