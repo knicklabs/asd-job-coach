@@ -2,6 +2,8 @@
 
 This is a functional prototype of a Google Chrome extension that helps job seekers with Autism Spectrum Disorder (ASD) find jobs that are a good fit for them and to help them prepare cover letters and resumes, as well as prepare and practice for interviews.
 
+![Screenshot of the extension](./SCREENSHOT.png)
+
 This prototype was created as a proof of concept for a design exploration of an LLM-based application as part of coursework for CS-8001 LLM Seminar at Georgia Tech.
 
 This is not a production-ready application and should not be used as such. It is not supported and should not be used for any real-world purposes. It is merely a proof of concept.
